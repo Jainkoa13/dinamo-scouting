@@ -1,0 +1,465 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: players
+    description: Player operations
+  - name: teams
+    description: Team operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /players:
+    get:
+      operationId: listPlayers
+      tags: [players]
+      summary: List all players
+      responses:
+        "200":
+          description: List of players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Player"
+    post:
+      operationId: createPlayer
+      tags: [players]
+      summary: Create a player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlayerInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+
+  /players/stats:
+    get:
+      operationId: getPlayerStats
+      tags: [players]
+      summary: Get aggregate stats across all players
+      responses:
+        "200":
+          description: Aggregate stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerStats"
+
+  /players/{id}:
+    get:
+      operationId: getPlayer
+      tags: [players]
+      summary: Get a player by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Player found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "404":
+          description: Not found
+    patch:
+      operationId: updatePlayer
+      tags: [players]
+      summary: Update a player
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlayerUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        "404":
+          description: Not found
+    delete:
+      operationId: deletePlayer
+      tags: [players]
+      summary: Delete a player
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /teams:
+    get:
+      operationId: listTeams
+      tags: [teams]
+      summary: List teams
+      responses:
+        "200":
+          description: List of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+    post:
+      operationId: createTeam
+      tags: [teams]
+      summary: Create a team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+
+  /teams/{id}:
+    patch:
+      operationId: updateTeam
+      tags: [teams]
+      summary: Update a team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteTeam
+      tags: [teams]
+      summary: Delete a team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Team:
+      type: object
+      required:
+        - id
+        - nombre
+        - userId
+        - createdAt
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        nombre:
+          type: string
+        createdAt:
+          type: string
+
+    TeamInput:
+      type: object
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+
+    Player:
+      type: object
+      required:
+        - id
+        - nombre
+        - posicion
+        - pierna
+        - edad
+        - velocidad
+        - tecnica
+        - fisico
+        - actitud
+        - createdAt
+      properties:
+        id:
+          type: integer
+        userId:
+          type: ["integer", "null"]
+        teamId:
+          type: ["integer", "null"]
+        nombre:
+          type: string
+        alias:
+          type: ["string", "null"]
+        posicion:
+          type: string
+        pierna:
+          type: string
+        edad:
+          type: integer
+        ano:
+          type: ["integer", "null"]
+        altura:
+          type: ["number", "null"]
+        peso:
+          type: ["number", "null"]
+        velocidad:
+          type: integer
+          minimum: 1
+          maximum: 10
+        tecnica:
+          type: integer
+          minimum: 1
+          maximum: 10
+        fisico:
+          type: integer
+          minimum: 1
+          maximum: 10
+        actitud:
+          type: integer
+          minimum: 1
+          maximum: 10
+        reflejo:
+          type: ["integer", "null"]
+          minimum: 1
+          maximum: 10
+        pais:
+          type: ["string", "null"]
+        observaciones:
+          type: ["string", "null"]
+        foto:
+          type: ["string", "null"]
+        fotoTarjeta:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    PlayerInput:
+      type: object
+      required:
+        - nombre
+        - posicion
+        - pierna
+        - edad
+        - velocidad
+        - tecnica
+        - fisico
+        - actitud
+      properties:
+        teamId:
+          type: ["integer", "null"]
+        nombre:
+          type: string
+          minLength: 1
+        alias:
+          type: ["string", "null"]
+        posicion:
+          type: string
+        pierna:
+          type: string
+        edad:
+          type: integer
+        ano:
+          type: ["integer", "null"]
+        altura:
+          type: ["number", "null"]
+        peso:
+          type: ["number", "null"]
+        velocidad:
+          type: integer
+          minimum: 1
+          maximum: 10
+        tecnica:
+          type: integer
+          minimum: 1
+          maximum: 10
+        fisico:
+          type: integer
+          minimum: 1
+          maximum: 10
+        actitud:
+          type: integer
+          minimum: 1
+          maximum: 10
+        reflejo:
+          type: ["integer", "null"]
+          minimum: 1
+          maximum: 10
+        pais:
+          type: ["string", "null"]
+        observaciones:
+          type: ["string", "null"]
+        foto:
+          type: ["string", "null"]
+        fotoTarjeta:
+          type: ["string", "null"]
+
+    PlayerUpdate:
+      type: object
+      properties:
+        teamId:
+          type: ["integer", "null"]
+        nombre:
+          type: string
+        alias:
+          type: ["string", "null"]
+        posicion:
+          type: string
+        pierna:
+          type: string
+        edad:
+          type: integer
+        ano:
+          type: ["integer", "null"]
+        altura:
+          type: ["number", "null"]
+        peso:
+          type: ["number", "null"]
+        velocidad:
+          type: integer
+          minimum: 1
+          maximum: 10
+        tecnica:
+          type: integer
+          minimum: 1
+          maximum: 10
+        fisico:
+          type: integer
+          minimum: 1
+          maximum: 10
+        actitud:
+          type: integer
+          minimum: 1
+          maximum: 10
+        reflejo:
+          type: ["integer", "null"]
+          minimum: 1
+          maximum: 10
+        pais:
+          type: ["string", "null"]
+        observaciones:
+          type: ["string", "null"]
+        foto:
+          type: ["string", "null"]
+        fotoTarjeta:
+          type: ["string", "null"]
+
+    PlayerStats:
+      type: object
+      required:
+        - total
+        - avgVelocidad
+        - avgTecnica
+        - avgFisico
+        - avgActitud
+        - byPosicion
+        - byPierna
+      properties:
+        total:
+          type: integer
+        avgVelocidad:
+          type: number
+        avgTecnica:
+          type: number
+        avgFisico:
+          type: number
+        avgActitud:
+          type: number
+        byPosicion:
+          type: array
+          items:
+            type: object
+            required: [posicion, count]
+            properties:
+              posicion:
+                type: string
+              count:
+                type: integer
+        byPierna:
+          type: array
+          items:
+            type: object
+            required: [pierna, count]
+            properties:
+              pierna:
+                type: string
+              count:
+                type: integer

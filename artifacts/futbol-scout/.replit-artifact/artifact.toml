@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Fútbol Scout"
+version = "1.0.0"
+id = "artifacts/futbol-scout"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24800
+
+[services.development]
+run = "pnpm --filter @workspace/futbol-scout run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/futbol-scout", "run", "build" ]
+publicDir = "artifacts/futbol-scout/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24800"
+BASE_PATH = "/"

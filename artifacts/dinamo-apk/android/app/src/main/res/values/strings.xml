@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DI Scouting</string>
+    <string name="title_activity_main">DI Scouting</string>
+    <string name="package_name">com.dinamoibaiondo.scouting</string>
+    <string name="custom_url_scheme">com.dinamoibaiondo.scouting</string>
+</resources>
